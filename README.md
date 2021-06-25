@@ -1,7 +1,7 @@
-### Objective 
+# Objective 
 The purpose of this submission is to demonstrate the technical skills expected of a candidate for Solutions engineer position. 
 
-### Scope of the exercise
+# Scope of the exercise
 The scope of the exercise is to build a bot that handles the following two kinds of conversations.
 
 The bot should allow for two kinds of conversations:
@@ -27,42 +27,57 @@ The bot should allow for two kinds of conversations:
 “Yes, your application has been received.”
 
 
-### Development
+# Development
 
 ## Installation of Rasa Open Source
 ```
+# First create a dedicated directory for the project under the current working directory
 mkdir rasa_take_home_exam
 
+# Second, cd into the newly created project directory
 cd rasa_take_home_exam
 
+# Third, it is a good practice to create a dedicated virtual environment for the project to avoid interfering with the packages for other projects
+# In this case, I create a virtual environment called rasa_bot with python version 3.7.5
 conda create --name rasa_bot python==3.7.5
 
+# Next, activate the newly created virtual environment
 conda activate rasa_bot
 
+# Install ultra json as we need it for the bot
 conda install ujson
 
+# Install tensorflow
 conta install tensorflow
 
 ```
 
-Install Visual Studio Build Tools >=14.0
-    - MS Visual Studio C++
-	- Windows SDK 
+Before installing rasa, I had to install or update the Visual Studio Buld Tools.
 
+Install Visual Studio Build Tools >=14.0
+    * MS Visual Studio C++
+	* Windows SDK 
+
+Finally, installed rasa with the following code. 
 ```
 pip install rasa==1.10.12
 
 pip install rasa_sdk==1.10.1
 ```
 
-# Challenges faced
+## Challenges faced during installation
+
+I encountered the following error while attempting to install rasa version 1.10.12
+
     ERROR: Could not build wheels for ujson which use PEP 517 and cannot be installed directly
-# Solution: 
-    Correctly installing the Visual Studio Build Tools solved the above problem
+	
+## How I solved the above challenge
+ 
+I had to update the Visual Studio Build Tools on my local machine and it solved the above problem
 
-## Build initial prototype of the rasa bot
+# Build 
 
-I build the initial prototype of the rasa bot model with the below code. 
+I built the initial prototype of the rasa bot model with the below code. 
 
 ```
 rasa init
@@ -70,9 +85,9 @@ rasa init
 ```
 
 
-## Training
+# Training the bot 
 
-I used the following commands the most often during the training phase of the model 
+I used the following commands the most often during the training phase of the model/bot.  
 
   ```
   # train the mode
@@ -86,15 +101,20 @@ I used the following commands the most often during the training phase of the mo
 
   ```
 
-# Challenges faced
+## Challenges faced
+
+I face the following error when trying to load the model with "rasa shell" 
+
     ERROR:  Could not load model due to Domain specification has changed. You MUST retrain the policy. Detected mismatch in domain specification. The following states have been
             - removed: slot_status_4
             - added:    .
-# Solution:
-    Made changes to the order of components in the pipeline and also changed the types of the slots. After making these changes, the error disappeared. I never encountered this issue with the rasa==2.5.0 so this was new.
+## Solution:
 
-# Decisions 
-  ** Pipeline
+Made changes to the order of components in the pipeline and also changed the types (text vs categorical etc.) of the slots. After making these changes, the error disappeared. I never encountered this issue with the rasa==2.5.0 before so this was new to me.
+
+## Decisions 
+
+### Pipeline
   
   At first, I tried the following pipeline. The reason for that was it is a recommended pipeline for a simple bot that is in english language and have very little data. But the I couldn't get it to work because I needed tensorflow_text 
   and I couldn't get the tensorflow_text work with the rasa 1.10.12 and tensorflow 2.1.0. 
@@ -138,9 +158,9 @@ So I decided to switch to the following pipeline which is another pipeline that 
     constrain_similarities: true
    ```
 
-   ** Custom actions
+### Custom actions
    
-   Made the the appropriate change to the following custom action to handle a situation where user doesn't enter his/her name. The response to the user doesn't address the person with their names.
+Made the the appropriate change to the following custom action to handle a situation where user doesn't enter his/her name. The response to the user doesn't address the person with their names.
    
    ```
    class ActionCheckStatus(Action):
@@ -160,10 +180,10 @@ So I decided to switch to the following pipeline which is another pipeline that 
         return [SlotSet("status", status)]
    ```
    
-   Made the appropriate changes in "action_check_positions" to handle the following situations:
-    - Handle the synonymous slot values for position_type (i.e. tech vs technical, any vs anything etc.)
-	- Correctly list the jobs by using "," and "and" appropriately (i.e. "ML engineer and Solutions Engineer" vs "ML engineer, Software developer, and Solutions Engineer")
-	- Return an additional slot value, role_type, back to the core to use in the conversation path 
+Made the appropriate changes in "action_check_positions" to handle the following situations:
+   * Handle the synonymous slot values for position_type (i.e. tech vs technical, any vs anything etc.)
+   * Correctly list the jobs by using "," and "and" appropriately (i.e. "ML engineer and Solutions Engineer" vs "ML engineer, Software developer, and Solutions Engineer")
+   * Return an additional slot value, role_type, back to the core to use in the conversation path 
    
    ```
    class ActionCheckPositions(Action):
@@ -206,17 +226,17 @@ So I decided to switch to the following pipeline which is another pipeline that 
    
    ```
 
-   ** NLU
+### NLU
    
-   Used the slot "role_types" in the stories regarding the inquiry of the open positions to provide the correct response about the types of open positions based on the value of this slot variable.
+  * Used the slot "role_types" in the stories regarding the inquiry of the open positions to provide the correct response about the types of open positions based on the value of this slot variable.
    
-   Used the slot "status" in the stories regarding the job application status to provide the correct response about the actual status of the job application (received vs rejected vs interview etc.) based on the value of this slot variable.
+  * Used the slot "status" in the stories regarding the job application status to provide the correct response about the actual status of the job application (received vs rejected vs interview etc.) based on the value of this slot variable.
    
-   Used the slot "positions" in the responses (in domain.yml) to respond back to the users with the list of open positions.
+  * Used the slot "positions" in the responses (in domain.yml) to respond back to the users with the list of open positions.
    
-   Used the slot "name" in the responses (in domain.yml) to respond back to the users by addressing them with their names.
+  * Used the slot "name" in the responses (in domain.yml) to respond back to the users by addressing them with their names.
    
-## Testing
+# Testing
 
 ```
 rasa test nlu -u data/nlu.yml --config config.yml --cross-validation
