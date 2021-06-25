@@ -246,3 +246,9 @@ rasa test nlu -u data/nlu.yml --config config.yml --cross-validation
 Please find the results of the test in the results directory of this repo. For the summary report of the intents, please see the file "intent_report.md" or run "python report_results.py" while in the results directory.
 
 
+# 6. Rasa X
+
+Although it is not required for this exercise, I have deployed Rasa X and uploaded the model for interactive learning. It is a perfect way to improve the assistance. Please click on the below link to interact with the model in an interactive learning mode.
+
+http://35.197.29.212:8000/guest/conversations/production/c067895460fb4c7f84cfd1728f2d24f4
+
