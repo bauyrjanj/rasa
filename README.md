@@ -87,7 +87,15 @@ rasa init
 
 # 4. Training the bot 
 
-I used the following commands the most often during the training phase of the model/bot.  
+I started by creating some training data for nlu (intent examples), nlu core (stories) and also created entities, slots, responses in the domain.yml file. I also listed the custom actions in the actions section of the domain.yml. I created 6 intents and 11 stories in total to icnlude in the training set.
+
+I am using regex to extract names from the conversations and also used 5 slot variables to store information as required. There are 2 entities that are extracted from the conversations and are also stored in slots to be either consumed by the custom actions or stories. 
+
+Then I worked on the pipeline in the config.yml file. I tried to implement and compare two different pipelines, both leveraging a pre-trained language model as I didn't have enough training data.  Find more details below.
+
+I also uncommented the action_endpoint in the endpoints.yml file as I need it to run my custom action server. 
+
+In general, I used the following commands the most often during the training phase of the model/bot.  
 
   ```
   # train the mode
@@ -108,9 +116,11 @@ I face the following error when trying to load the model with "rasa shell"
     ERROR:  Could not load model due to Domain specification has changed. You MUST retrain the policy. Detected mismatch in domain specification. The following states have been
             - removed: slot_status_4
             - added:    .
-## 4.2 Solution:
 
-Made changes to the order of components in the pipeline and also changed the types (text vs categorical etc.) of the slots. After making these changes, the error disappeared. I never encountered this issue with the rasa==2.5.0 before so this was new to me.
+## 4.2 How I solved the above challenge:
+
+Made changes to the order of components in the pipeline and also changed the types (text vs categorical etc.) of the slots. After making these changes, the error disappeared. I am not 100% sure what the cause of this error but 
+I suspect it has something to do with the categorical slots where values are listed and the max_history of the policies. I never encountered this issue with the rasa==2.5.0 before so this was new to me.
 
 ## 4.3 Decisions 
 
