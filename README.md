@@ -243,6 +243,6 @@ rasa test nlu -u data/nlu.yml --config config.yml --cross-validation
 
 ```
 
-Please find the results of the test in the results directory of this repo. 
+Please find the results of the test in the results directory of this repo. For the summary report of the intents, please see the file "intent_report.md" or run "python report_results.py" while in the results directory.
 
 
